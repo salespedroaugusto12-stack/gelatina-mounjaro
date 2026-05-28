@@ -1603,7 +1603,7 @@ function SalesPage({ answers }: { answers: QuizAnswers }) {
               <span className="text-6xl font-black text-gradient-primary">25</span>
               <span className="text-3xl font-black text-gradient-primary">,90</span>
             </div>
-            <div className="text-xs text-muted-foreground mb-5">ou 4x de R$ 5,12 sem juros</div>
+            <div className="text-xs text-muted-foreground mb-5">ou 6x de R$ 5,32 sem juros</div>
 
             <motion.a
               href="#checkout"
