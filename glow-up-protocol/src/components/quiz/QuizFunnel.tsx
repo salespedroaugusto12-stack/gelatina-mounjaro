@@ -1600,7 +1600,7 @@ function SalesPage({ answers }: { answers: QuizAnswers }) {
             <div className="text-sm text-muted-foreground line-through">De R$ 197,00</div>
             <div className="my-1">
               <span className="text-sm font-bold align-top">R$</span>
-              <span className="text-6xl font-black text-gradient-primary">19</span>
+              <span className="text-6xl font-black text-gradient-primary">25</span>
               <span className="text-3xl font-black text-gradient-primary">,90</span>
             </div>
             <div className="text-xs text-muted-foreground mb-5">ou 4x de R$ 5,12 sem juros</div>
@@ -1673,7 +1673,7 @@ function SalesPage({ answers }: { answers: QuizAnswers }) {
         <div className="max-w-md mx-auto flex items-center gap-3">
           <div>
             <div className="text-[10px] text-muted-foreground line-through">R$ 197</div>
-            <div className="text-lg font-black text-gradient-primary leading-none">R$ 19,90</div>
+            <div className="text-lg font-black text-gradient-primary leading-none">R$ 25,90</div>
           </div>
           <motion.a
             href="#checkout"
