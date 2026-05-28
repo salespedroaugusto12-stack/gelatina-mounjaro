@@ -610,19 +610,7 @@ function AnimatedBMI({ value, colorClass, level }: { value: number, colorClass: 
 // ============ MAIN ============
 export default function QuizFunnel() {
   const [step, setStep] = useState(0);
-  const [answers, setAnswers] = useState<QuizAnswers>(() => {
-    try {
-      const saved = localStorage.getItem("quiz_answers");
-      return saved ? JSON.parse(saved) : initialAnswers;
-    } catch {
-      return initialAnswers;
-    }
-  });
-
-  useEffect(() => {
-    localStorage.setItem("quiz_answers", JSON.stringify(answers));
-  }, [answers]);
-
+  const [answers, setAnswers] = useState<QuizAnswers>(initialAnswers);
   const scrollRef = useRef<HTMLDivElement>(null);
 
   const next = () => {
