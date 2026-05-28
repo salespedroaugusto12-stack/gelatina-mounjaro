@@ -635,9 +635,7 @@ export default function QuizFunnel() {
   };
 
   // BMI calc
-  const weight = answers.weight || 70;
-  const height = answers.height || 165;
-  const bmi = weight / Math.pow(height / 100, 2);
+  const bmi = 27.74;
   const bmiLevel = bmi < 18.5 ? "Abaixo" : bmi < 25 ? "Normal" : bmi < 30 ? "Sobrepeso" : "Obesidade";
   
   const getBmiColor = (val: number) => {
@@ -1095,7 +1093,7 @@ export default function QuizFunnel() {
             <div className="mt-4 grid grid-cols-2 gap-3">
               <div className="glass-pink rounded-2xl p-4">
                 <div className="text-xs text-muted-foreground">Meta</div>
-                <div className="text-xl font-black text-gradient-primary">-{(answers.weight || 70) - (answers.targetWeight || 60)}kg</div>
+                <div className="text-xl font-black text-gradient-primary">-10kg</div>
               </div>
               <div className="glass-pink rounded-2xl p-4">
                 <div className="text-xs text-muted-foreground">Estimativa</div>
@@ -1480,7 +1478,7 @@ function SalesPage({ answers }: { answers: QuizAnswers }) {
           className="relative overflow-hidden bg-white/70 backdrop-blur-xl border border-white/60 rounded-[2rem] p-5 text-center shadow-[0_8px_32px_-4px_rgba(0,0,0,0.04)]"
         >
           <p className="font-bold text-[15px]">
-            Você poderá reduzir <span className="text-gradient-primary font-black">{(answers.weight || 70) - (answers.targetWeight || 60)}kg</span> nas próximas semanas seguindo seu protocolo personalizado.
+            Você poderá reduzir <span className="text-gradient-primary font-black">10kg</span> nas próximas semanas seguindo seu protocolo personalizado.
           </p>
         </motion.div>
 
