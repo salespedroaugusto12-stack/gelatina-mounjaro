@@ -558,10 +558,71 @@ function TransformationCarousel() {
   );
 }
 
+function AnimatedBMI({ value, colorClass, level }: { value: number, colorClass: string, level: string }) {
+  const [displayValue, setDisplayValue] = useState(0);
+
+  useEffect(() => {
+    let startTime: number;
+    const duration = 1000;
+    const endValue = value;
+
+    const animate = (time: number) => {
+      if (!startTime) startTime = time;
+      const progress = Math.min((time - startTime) / duration, 1);
+      
+      // Easing out
+      const easeOut = progress === 1 ? 1 : 1 - Math.pow(2, -10 * progress);
+      
+      setDisplayValue(endValue * easeOut);
+      
+      if (progress < 1) {
+        requestAnimationFrame(animate);
+      } else {
+        setDisplayValue(endValue);
+      }
+    };
+    
+    requestAnimationFrame(animate);
+  }, [value]);
+
+  const percentage = Math.min(100, Math.max(0, ((displayValue - 15) / (40 - 15)) * 100));
+
+  return (
+    <div className={`rounded-3xl p-6 text-white shadow-glow-pink transition-colors duration-1000 ${colorClass}`}>
+      <div className="text-xs font-bold uppercase tracking-wider opacity-80">Seu IMC atual</div>
+      <div className="text-6xl font-black mt-1 tabular-nums">{displayValue.toFixed(1)}</div>
+      <div className="text-sm font-bold opacity-90 mt-1">Classificação: {level}</div>
+      <div className="relative mt-6 h-3 rounded-full bg-black/20">
+        <motion.div 
+          initial={{ left: 0 }} 
+          animate={{ left: `${percentage}%` }} 
+          transition={{ duration: 1, ease: "easeOut" }} 
+          className="absolute top-1/2 -translate-y-1/2 -ml-2 size-5 bg-white rounded-full shadow-md border-2 border-transparent"
+        />
+      </div>
+      <div className="flex justify-between text-[10px] font-bold opacity-70 mt-2">
+        <span>15</span><span>18.5</span><span>25</span><span>30</span><span>40+</span>
+      </div>
+    </div>
+  );
+}
+
 // ============ MAIN ============
 export default function QuizFunnel() {
   const [step, setStep] = useState(0);
-  const [answers, setAnswers] = useState<QuizAnswers>(initialAnswers);
+  const [answers, setAnswers] = useState<QuizAnswers>(() => {
+    try {
+      const saved = localStorage.getItem("quiz_answers");
+      return saved ? JSON.parse(saved) : initialAnswers;
+    } catch {
+      return initialAnswers;
+    }
+  });
+
+  useEffect(() => {
+    localStorage.setItem("quiz_answers", JSON.stringify(answers));
+  }, [answers]);
+
   const scrollRef = useRef<HTMLDivElement>(null);
 
   const next = () => {
@@ -574,9 +635,17 @@ export default function QuizFunnel() {
   };
 
   // BMI calc
-  const bmi = answers.weight && answers.height ? (answers.weight / Math.pow(answers.height / 100, 2)) : 0;
+  const weight = answers.weight || 70;
+  const height = answers.height || 165;
+  const bmi = weight / Math.pow(height / 100, 2);
   const bmiLevel = bmi < 18.5 ? "Abaixo" : bmi < 25 ? "Normal" : bmi < 30 ? "Sobrepeso" : "Obesidade";
-  const bmiColor = bmi < 25 ? "text-success" : bmi < 30 ? "text-yellow-500" : "text-destructive";
+  
+  const getBmiColor = (val: number) => {
+    if (val < 18.5) return "bg-gradient-to-br from-blue-400 to-blue-600";
+    if (val < 25) return "bg-gradient-to-br from-emerald-400 to-emerald-600";
+    if (val < 30) return "bg-gradient-to-br from-orange-400 to-orange-600";
+    return "bg-gradient-to-br from-red-500 to-red-700";
+  };
 
   return (
     <div ref={scrollRef}>
@@ -1021,17 +1090,7 @@ export default function QuizFunnel() {
             subtitle={`Veja o que descobrimos sobre seu perfil, ${answers.name || ""}.`}
             footer={<PrimaryButton onClick={next}>Ver como funciona <ChevronRight className="size-5" /></PrimaryButton>}
           >
-            <div className="rounded-3xl bg-gradient-primary p-6 text-white shadow-glow-pink">
-              <div className="text-xs font-bold uppercase tracking-wider opacity-80">Seu IMC atual</div>
-              <div className="text-6xl font-black mt-1 tabular-nums">{bmi.toFixed(1)}</div>
-              <div className="text-sm font-bold opacity-90 mt-1">Classificação: {bmiLevel}</div>
-              <div className="mt-4 h-2 rounded-full bg-white/20 overflow-hidden">
-                <motion.div initial={{ width: 0 }} animate={{ width: `${Math.min(100, (bmi / 40) * 100)}%` }} transition={{ duration: 1 }} className="h-full bg-white rounded-full" />
-              </div>
-              <div className="flex justify-between text-[10px] font-bold opacity-70 mt-1">
-                <span>18.5</span><span>25</span><span>30</span><span>40+</span>
-              </div>
-            </div>
+            <AnimatedBMI value={bmi} level={bmiLevel} colorClass={getBmiColor(bmi)} />
 
             <div className="mt-4 grid grid-cols-2 gap-3">
               <div className="glass-pink rounded-2xl p-4">
